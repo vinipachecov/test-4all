@@ -8,7 +8,7 @@ import { mainYellow, white } from '../../../../utils/colors';
 const styles = StyleSheet.create({
   mapContainer: {
     justifyContent: 'flex-start',
-    height: '25%',
+    height: 100,
     width: '100%',
   },
   mapStyle: {
@@ -22,21 +22,21 @@ const styles = StyleSheet.create({
     backgroundColor: mainYellow,
     position: 'absolute',
     bottom: 0,
-    justifyContent: 'center',
+    justifyContent: 'flex-end',
   },
   addressStyle: {
     color: white,
-    marginLeft: '20%',
+    marginRight: 50,
   },
   mapMarkerContainer: {
-    height: 50,
-    width: 50,
-    borderRadius: 50,
+    height: 40,
+    width: 40,
+    borderRadius: 40,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: white,
     position: 'absolute',
-    right: 0,
+    right: '1%',
     bottom: '20%',
     zIndex: 3,
     elevation: 1,
@@ -58,11 +58,6 @@ const MapaItem = ({ longitude, latitude, endereco }) => (
         latitudeDelta: 0.0042,
         longitudeDelta: 0.0031,
       }}
-      rotateEnabled={false}
-      scrollEnabled={false}
-      zoomControlEnabled={false}
-      showsBuildings={false}
-
     >
       <Marker
         coordinate={{

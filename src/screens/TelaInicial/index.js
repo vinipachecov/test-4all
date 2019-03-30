@@ -11,7 +11,7 @@ import { mainYellow } from '../../../utils/colors';
 import { tarefaActions } from '../../store/actions';
 import ScreenOverlayLoader from '../../components/ScreenOverlayLoader';
 
-class TelaInicial extends PureComponent {
+export class TelaInicial extends PureComponent {
   async componentDidMount() {
     const { getTarefas } = this.props;
     getTarefas();

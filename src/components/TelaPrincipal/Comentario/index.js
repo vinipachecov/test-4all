@@ -63,7 +63,11 @@ const Comentario = ({
 
       </View>
       <Text style={{
-        marginLeft: 10, fontSize: 12, color: mainYellow, textAlign: 'justify',
+        marginLeft: 10,
+        fontSize: 12,
+        color: mainYellow,
+        textAlign: 'justify',
+        marginRight: 20,
       }}
       >
         {comentario}

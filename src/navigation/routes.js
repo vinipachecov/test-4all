@@ -10,9 +10,9 @@ const baseStack = createStackNavigator({
   TelaPrincipal: {
     screen: TelaPrincipal,
   },
-  // TelaServicos: {
-  //   screen: TelaServicos,
-  // },
+  TelaServicos: {
+    screen: TelaServicos,
+  },
 }, {
   headerMode: 'none',
 });

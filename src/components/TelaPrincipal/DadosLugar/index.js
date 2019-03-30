@@ -1,109 +1,100 @@
 import React from 'react';
 import {
-  View, Text, FlatList, ScrollView,
+  View, Text, ScrollView, StyleSheet,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { Icon } from 'native-base';
 import { backgroundGray, mainYellow } from '../../../../utils/colors';
 import Button from '../../Button';
-import Comentario from '../Comentario';
-import MapaItem from '../MapaItem';
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1, width: '100%', backgroundColor: backgroundGray,
+  },
+  titulo: {
+    fontSize: 20,
+    marginLeft: 20,
+    color: mainYellow,
+    marginVertical: 5,
+  },
+  descricaoContainer: {
+    backgroundColor: 'white',
+    height: '100%',
+  },
+  listaBotoes: {
+    height: 50,
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-evenly',
+  },
+  botaoIcone: {
+    color: mainYellow,
+    fontSize: 25,
+  },
+  botaoText: { fontSize: 8, color: mainYellow },
+  separador: {
+    marginBottom: 5,
+    width: '90%',
+    height: 1,
+    alignSelf: 'center',
+    backgroundColor: backgroundGray,
+  },
+  textoContainer: {
+    minHeight: 90,
+    width: '100%',
+  },
+  texto: {
+    textAlign: 'justify',
+    marginHorizontal: 20,
+    fontSize: 12,
+    color: mainYellow,
+  },
+});
 
 const DadosLugar = ({ listaBotoes, tarefa, onButtonListPress }) => (
-  <View style={{ flex: 1, backgroundColor: backgroundGray, justifyContent: 'center' }}>
-    <Text style={{
-      fontSize: 20,
-      marginLeft: 20,
-      marginTop: 10,
-      color: mainYellow,
-    }}
-    >
+  <View style={styles.container}>
+    <Text style={styles.titulo}>
       {
-            tarefa.titulo.toUpperCase()
-            }
+       tarefa.titulo.toUpperCase()
+      }
     </Text>
     {/* Botões de ação e descições */}
-    <View style={{
-      backgroundColor: 'white',
-      height: '40%',
-    }}
-    >
+    <View style={styles.descricaoContainer}>
       {/* List de botões */}
-      <View style={{
-        height: '35%',
-        width: '100%',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-evenly',
-      }}
-      >
+      <View style={styles.listaBotoes}>
         { listaBotoes.map(button => (
           <Button
+            key={button.name}
             onPress={() => onButtonListPress(button.name)}
           >
             <Icon
-              style={{
-                color: mainYellow,
-                fontSize: 20,
-              }}
+              style={styles.botaoIcone}
               name={button.iconName}
               type={button.iconType}
             />
-            <Text style={{ fontSize: 8, color: mainYellow }}>{button.name}</Text>
-            {/* </View> */}
+            <Text style={styles.botaoText}>{button.name}</Text>
           </Button>
         ))}
       </View>
       {/* LInha de separação */}
-      <View style={{
-        marginBottom: 5,
-        width: '90%',
-        height: 1,
-        alignSelf: 'center',
-        backgroundColor: backgroundGray,
-      }}
-      />
+      <View style={styles.separador} />
       {/* Sobre */}
-      <ScrollView>
-        <Text style={{
-          textAlign: 'justify',
-          marginHorizontal: 20,
-          fontSize: 12,
-          color: mainYellow,
-        }}
-        >
+      <ScrollView
+        style={styles.textoContainer}
+      >
+        <Text style={styles.texto}>
           {tarefa.texto}
         </Text>
       </ScrollView>
     </View>
-    {/* Mapa */}
-    <MapaItem
-      endereco={tarefa.endereco}
-      latitude={tarefa.latitude}
-      longitude={tarefa.longitude}
-    />
-    <FlatList
-      style={{
-        flex: 1,
-      }}
-      data={tarefa.comentarios}
-      renderItem={({ item }) => (
-        <Comentario
-          comentario={item.comentario}
-          titulo={item.titulo}
-          foto={item.urlFoto}
-          nota={item.nota}
-          usuario={item.nome}
-        />
-      )}
-      keyExtractor={item => item.urlFoto}
-    />
+
   </View>
 );
 
 DadosLugar.propTypes = {
   tarefa: PropTypes.shape({
-    id: PropTypes.number.isRequired,
+    id: PropTypes.string.isRequired,
     cidade: PropTypes.string.isRequired,
     urlFoto: PropTypes.string.isRequired,
     urlLogo: PropTypes.string.isRequired,
@@ -113,14 +104,20 @@ DadosLugar.propTypes = {
     endereco: PropTypes.string.isRequired,
     latitude: PropTypes.number,
     longitude: PropTypes.number,
-    comentarios: PropTypes.arrayOf({
-      urlFoto: PropTypes.string.isRequired,
-      nome: PropTypes.string.isRequired,
-      nota: PropTypes.number,
-      comentario: PropTypes.string.isRequired,
-    }).isRequired,
+    comentarios: PropTypes.arrayOf(
+      PropTypes.shape({
+        urlFoto: PropTypes.string.isRequired,
+        nome: PropTypes.string.isRequired,
+        nota: PropTypes.number.isRequired,
+        comentario: PropTypes.string.isRequired,
+      }),
+    ).isRequired,
   }).isRequired,
-  listaBotoes: PropTypes.arrayOf({}).isRequired,
+  listaBotoes: PropTypes.arrayOf(PropTypes.shape({
+    name: PropTypes.string,
+    iconName: PropTypes.string,
+    iconType: PropTypes.string,
+  })).isRequired,
 };
 
 export default DadosLugar;

@@ -1,19 +1,23 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {
-  View, StyleSheet, Image, Linking, Text, TouchableOpacity,
+  View, StyleSheet, Image, Linking, Text, TouchableOpacity, ScrollView, FlatList,
 } from 'react-native';
 import Modal from 'react-native-modal';
 import PropTypes from 'prop-types';
-import {
-  Container, Icon,
-} from 'native-base';
+import { Container, Icon } from 'native-base';
 // custom
 import { mainYellow, white } from '../../../utils/colors';
 import DadosLugar from '../../components/TelaPrincipal/DadosLugar';
 import BarraNavegacao from '../../components/TelaPrincipal/BarraNavegacao';
+import Comentario from '../../components/TelaPrincipal/Comentario';
+import MapaItem from '../../components/TelaPrincipal/MapaItem';
 
 const styles = StyleSheet.create({
+  imageContainer: {
+    height: 200,
+    width: '100%',
+  },
   image: {
     height: '100%',
     width: '100%',
@@ -60,12 +64,13 @@ const buttonList = [
   },
 ];
 
-class TelaPrincipal extends Component {
+export class TelaPrincipal extends Component {
   constructor() {
     super();
     this.state = {
       modalVisible: false,
     };
+    this.scrollView = null;
   }
 
   onHeaderLeftPress() {
@@ -77,13 +82,10 @@ class TelaPrincipal extends Component {
     this.setState({ modalVisible: state });
   }
 
+
   onOpenPhone() {
     const { tarefa } = this.props;
-    try {
-      Linking.openURL(`tel://${tarefa.telefone}`);
-    } catch (error) {
-      console.log(error);
-    }
+    Linking.openURL(`tel://${tarefa.telefone}`);
   }
 
   onButtonListPress(name) {
@@ -111,22 +113,16 @@ class TelaPrincipal extends Component {
   render() {
     const { tarefa } = this.props;
     const { modalVisible } = this.state;
+    const comentarios = tarefa.comentarios.map((item, index) => ({ ...item, id: index }));
     return (
       <Container>
-        <BarraNavegacao
-          bairro={tarefa.bairro}
-          cidade={tarefa.cidade}
-          leftPress={() => this.onHeaderLeftPress()}
-        />
-        <View style={{
-          flex: 1,
-        }}
-        >
-          <View style={{
-            height: '40%',
-            width: '100%',
-          }}
-          >
+        <ScrollView>
+          <BarraNavegacao
+            bairro={tarefa.bairro}
+            cidade={tarefa.cidade}
+            leftPress={() => this.onHeaderLeftPress()}
+          />
+          <View style={styles.imageContainer}>
             <Image
               style={styles.image}
               source={{ uri: tarefa.urlFoto }}
@@ -152,25 +148,49 @@ class TelaPrincipal extends Component {
             tarefa={tarefa}
             onButtonListPress={name => this.onButtonListPress(name)}
           />
-        </View>
-        <Modal
-          isVisible={modalVisible}
-        >
-          <View style={{
-            height: 100,
-            width: 100,
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
+          <MapaItem
+            endereco={tarefa.endereco}
+            latitude={tarefa.latitude}
+            longitude={tarefa.longitude}
+          />
+          <FlatList
+            data={comentarios}
+            renderItem={({ item }) => (
+              <Comentario
+                key={item.id}
+                comentario={item.comentario}
+                titulo={item.titulo}
+                foto={item.urlFoto}
+                nota={item.nota}
+                usuario={item.nome}
+              />
+            )}
+            keyExtractor={item => item.id.toString()}
+          />
+          <Modal
+            isVisible={modalVisible}
+            style={{
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
           >
-            <Text>{tarefa.endereco}</Text>
-            <TouchableOpacity
-              onPress={() => this.onShowAddress(false)}
+            <View style={{
+              height: 100,
+              width: 100,
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: 'white',
+            }}
             >
-              <Text>Fechar Modal</Text>
-            </TouchableOpacity>
-          </View>
-        </Modal>
+              <Text>{tarefa.endereco}</Text>
+              <TouchableOpacity
+                onPress={() => this.onShowAddress(false)}
+              >
+                <Text>Fechar Modal</Text>
+              </TouchableOpacity>
+            </View>
+          </Modal>
+        </ScrollView>
       </Container>
     );
   }
@@ -183,7 +203,7 @@ TelaPrincipal.propTypes = {
     goBack: PropTypes.func,
   }).isRequired,
   tarefa: PropTypes.shape({
-    id: PropTypes.number.isRequired,
+    id: PropTypes.string.isRequired,
     cidade: PropTypes.string.isRequired,
     urlFoto: PropTypes.string.isRequired,
     urlLogo: PropTypes.string.isRequired,
@@ -193,12 +213,14 @@ TelaPrincipal.propTypes = {
     endereco: PropTypes.string.isRequired,
     latitude: PropTypes.number,
     longitude: PropTypes.number,
-    comentarios: PropTypes.arrayOf({
-      urlFoto: PropTypes.string.isRequired,
-      nome: PropTypes.string.isRequired,
-      nota: PropTypes.number,
-      comentario: PropTypes.string.isRequired,
-    }).isRequired,
+    comentarios: PropTypes.arrayOf(
+      PropTypes.shape({
+        urlFoto: PropTypes.string.isRequired,
+        nome: PropTypes.string.isRequired,
+        nota: PropTypes.number.isRequired,
+        comentario: PropTypes.string.isRequired,
+      }),
+    ).isRequired,
   }).isRequired,
 };
 

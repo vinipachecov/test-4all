@@ -45,7 +45,9 @@ const styles = StyleSheet.create({
   },
 });
 
-const BarraNavegacao = ({ leftPress, cidade, bairro }) => (
+const BarraNavegacao = ({
+  leftPress, cidade, bairro, rightPress,
+}) => (
   <Header
     style={{
       backgroundColor: mainYellow,
@@ -77,7 +79,7 @@ const BarraNavegacao = ({ leftPress, cidade, bairro }) => (
     <View style={styles.HeaderSide}>
       <Button
         style={{ ...styles.HeaderButton, ...styles.rightButton }}
-        onPress={() => console.log('ola')}
+        onPress={() => rightPress()}
       >
         <Icon
           name="ios-search"
@@ -90,10 +92,15 @@ const BarraNavegacao = ({ leftPress, cidade, bairro }) => (
   </Header>
 );
 
+BarraNavegacao.defaultProps = {
+  rightPress: () => {},
+};
+
 BarraNavegacao.propTypes = {
   leftPress: PropTypes.func.isRequired,
   cidade: PropTypes.string.isRequired,
   bairro: PropTypes.string.isRequired,
+  rightPress: PropTypes.func,
 };
 
 export default BarraNavegacao;

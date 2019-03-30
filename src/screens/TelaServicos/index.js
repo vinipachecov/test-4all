@@ -1,12 +1,25 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Text } from 'react-native';
+import { Text, StyleSheet } from 'react-native';
 import {
   Container, Header, Left, Button, Icon, Right,
 } from 'native-base';
 import { white, mainYellow } from '../../../utils/colors';
 
-class TelaServicos extends Component {
+const styles = StyleSheet.create({
+  header: {
+    backgroundColor: mainYellow,
+  },
+  headerLeft: {
+    backgroundColor: mainYellow,
+    elevation: 0,
+  },
+  headerIcon: {
+    fontSize: 18,
+  },
+});
+
+export class TelaServicos extends Component {
   onHeaderLeftPress() {
     const { navigation } = this.props;
     navigation.goBack();
@@ -16,26 +29,19 @@ class TelaServicos extends Component {
     return (
       <Container>
         <Header
-          style={{
-            backgroundColor: mainYellow,
-          }}
+          style={styles.header}
           androidStatusBarColor={mainYellow}
         >
           <Left>
             <Button
               onPress={() => this.onHeaderLeftPress()}
-              style={{
-                backgroundColor: mainYellow,
-                elevation: 0,
-              }}
+              style={styles.headerLeft}
             >
               <Icon
                 name="caretleft"
                 type="AntDesign"
                 color={white}
-                style={{
-                  fontSize: 18,
-                }}
+                style={styles.headerIcon}
               />
             </Button>
           </Left>
@@ -50,6 +56,7 @@ class TelaServicos extends Component {
 TelaServicos.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
+    goBack: PropTypes.func,
   }).isRequired,
 };
 
